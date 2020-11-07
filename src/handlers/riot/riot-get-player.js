@@ -7,7 +7,36 @@ exports.getPlayerInfo = async (event) => {
 
     console.log("Received player retrieve request: ", JSON.stringify(event));
 
-    let playerData = new Promise((resolve, reject) => {
+    let playerData = getPlayerInfoPromise();
+
+    let finalResponse = await playerData
+        .then(result => {
+            console.log("got this success from the promise>>" + JSON.stringify(result));
+
+            let successResponse = {
+                statusCode: 200,
+                body: result
+            }
+
+            return successResponse;
+        })
+        .catch(result => {
+            console.log("got this error from the promise>>" + result);
+            let errorResponse = {
+                error: "Get player info error"
+            }
+
+            return JSON.stringify(errorResponse);
+        })
+
+
+    console.log("this is the final response>>" + JSON.stringify(finalResponse))
+
+    return finalResponse;
+};
+
+getPlayerInfoPromise = () => {
+    return new Promise((resolve, reject) => {
         const options = {
             // host: "na1.api.riotgames.com",
             // path: "/lol/summoner/v4/summoners/by-name/Wuri",
@@ -37,24 +66,4 @@ exports.getPlayerInfo = async (event) => {
             reject("Failed")
         });
     });
-
-    playerData
-        .then(result => {
-            console.log("got this success from the promise>>" + JSON.stringify(result));
-
-            let successResponse = {
-                statusCode: 200,
-                body: JSON.stringify(result)
-            }
-
-            return successResponse;
-        })
-        .catch(result => {
-            console.log("got this error from the promise>>" + result);
-            errorResponse = {
-                error: "Get player info error"
-            }
-
-            return JSON.stringify(errorResponse);
-        })
-};
+}

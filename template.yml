@@ -110,6 +110,31 @@ Resources:
             Path: /
             Method: POST
 
+  # This is a Lambda function config associated with the source code: put-item.js
+  addUserInfo:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/handlers/put-user-info.putUserInfoHandler
+      Runtime: nodejs10.x
+      MemorySize: 128
+      Timeout: 60
+      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserInfoTable
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          USER_INFO_TABLE: !Ref UserInfoTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /putUserInfo
+            Method: POST
+
   riotGetPlayerInfo:
     Type: AWS::Serverless::Function
     Properties:
@@ -134,6 +159,17 @@ Resources:
     Properties:
       PrimaryKey:
         Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
+  UserInfoTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: region
         Type: String
       ProvisionedThroughput:
         ReadCapacityUnits: 2

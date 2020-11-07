@@ -42,7 +42,12 @@ getPlayerInfo = async (event) => {
         .then(result => {
             console.log("got this success from the promise>>" + JSON.stringify(result));
 
-            return result;
+            let successResponse = {
+                statusCode: 200,
+                body: JSON.stringify(result)
+            }
+
+            return successResponse;
         })
         .catch(result => {
             console.log("got this error from the promise>>" + result);

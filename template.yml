@@ -109,6 +109,22 @@ Resources:
           Properties:
             Path: /
             Method: POST
+
+  riotGetPlayerInfo:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/handlers/riot/riot-get-player.getPlayerInfo
+      Runtime: nodejs10.x
+      MemorySize: 128
+      Timeout: 60
+      Description: Endpoint for getting information for a certain Summoner ID
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
   # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
 

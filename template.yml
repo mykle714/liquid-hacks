@@ -159,8 +159,6 @@ Resources:
             Path: /putUserInfo
             Method: POST
 
-
-
   riotGetPlayerInfo:
     Type: AWS::Serverless::Function
     Properties:
@@ -186,9 +184,6 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
 
   # # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
   # UserInfoTable:

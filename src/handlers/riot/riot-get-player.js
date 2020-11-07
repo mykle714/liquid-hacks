@@ -2,7 +2,7 @@
 
 const https = require("https");
 
-getPlayerInfo = async (event) => {
+exports.getPlayerInfo = async (event) => {
     let { httpMethod, path } = event;
 
     console.log("Received player retrieve request: ", JSON.stringify(event));

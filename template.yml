@@ -82,6 +82,30 @@ Resources:
           Properties:
             Path: /{id}
             Method: GET
+
+  getByRegion:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/handlers/get-by-region.getByRegionHandler
+      Runtime: nodejs10.x
+      MemorySize: 128
+      Timeout: 60
+      Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SampleTable
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          SAMPLE_TABLE: !Ref SampleTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{region}
+            Method: GET
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
@@ -123,17 +147,19 @@ Resources:
       Policies:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
-            TableName: !Ref UserInfoTable
+            TableName: !Ref SampleTable
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution
-          USER_INFO_TABLE: !Ref UserInfoTable
+          USER_INFO_TABLE: !Ref SampleTable
       Events:
         Api:
           Type: Api
           Properties:
             Path: /putUserInfo
             Method: POST
+
+
 
   riotGetPlayerInfo:
     Type: AWS::Serverless::Function
@@ -164,16 +190,35 @@ Resources:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
 
-  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
-  UserInfoTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      PrimaryKey:
-        Name: region
-        Type: String
-      SortKey:
-        Name: encodedLp
-        Type: Number
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+  # # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
+  # UserInfoTable:
+  #   Type: AWS::DynamoDB::Table
+  #   Properties:
+  #     AttributeDefinitions:
+  #       -
+  #         AttributeName: "email"
+  #         AttributeType: "S"
+
+  #     KeySchema:
+  #       -
+  #         AttributeName: "region"
+  #         KeyType: "HASH"
+  #       -
+  #         AttributeName: "encodedLp"
+  #         KeyType: "RANGE"
+  #     LocalSecondaryIndexes:
+  #       -
+  #         IndexName: "accountType"
+  #         KeySchema:
+  #           -
+  #             AttributeName: "accountType"
+  #             KeyType: "HASH"
+  #           -
+  #             AttributeName: "encodedLp"
+  #             KeyType: "RANGE"
+  #       Projection:
+  #         NonKeyAttributes:
+  #           - 
+  #     ProvisionedThroughput:
+  #       ReadCapacityUnits: 2
+  #       WriteCapacityUnits: 2

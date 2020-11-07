@@ -3,23 +3,25 @@ const docClient = new dynamodb.DocumentClient();
 
 const tableName = process.env.SAMPLE_TABLE;
 
-exports.putUserInfoHandler = async (event) => {
-    const { body, httpMethod, path } = event;
-    if (httpMethod !== 'POST') {
-        throw new Error(`postMethod only accepts POST method, you tried: ${httpMethod} method.`);
+exports.getByRegionHandler = async (event) => {
+    const { httpMethod, path, pathParameters } = event;
+    if (httpMethod !== 'GET') {
+        throw new Error(`getMethod only accept GET method, you tried: ${httpMethod}`);
 	}
+
 	console.log('received:', JSON.stringify(event));
+	const { region } = pathParameters;
 
 	const params = {
         TableName: tableName,
-        Item: JSON.parse(body)
+        Key: { region },
 	};
 	
-	await docClient.put(params).promise();
+	const { Item } = await docClient.get(params).promise();
 
 	const response = {
         statusCode: 200,
-        body,
+        body: JSON.stringify(Item),
     };
 
     console.log(`response from: ${path} statusCode: ${response.statusCode} body: ${response.body}`);

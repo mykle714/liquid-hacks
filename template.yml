@@ -171,6 +171,9 @@ Resources:
       PrimaryKey:
         Name: region
         Type: String
+      SortKey:
+        Name: encodedLp
+        Type: Number
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2

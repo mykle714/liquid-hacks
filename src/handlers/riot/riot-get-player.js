@@ -5,12 +5,14 @@ exports.getPlayerInfo = async (event) => {
 
     console.log("Received player retrieve request: ", JSON.stringify(event));
 
+    responseBody = {
+        name: "weiming",
+        summonerId: "weimotheninja"
+    }
+
     let response = {
         statusCode: 200,
-        body: {
-            "name":"weiming",
-            "summonerId":"weimotheninja"
-        }
+        body: JSON.stringify(responseBody)
     }
 
     return response
